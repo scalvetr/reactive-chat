@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactive-chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reactive-chat
+  template:
+    metadata:
+      labels:
+        app: reactive-chat
+    spec:
+      containers:
+        - name: reactive-chat
+          image: reactive-chat
+          imagePullPolicy: Never
+          #imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            failureThreshold: 1
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            failureThreshold: 30
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            failureThreshold: 30
+            periodSeconds: 10
+          env:
+            - name: spring.config.location
+              value: classpath:application.yml,file:/app/config/application.yml
+          volumeMounts:
+            - name: reactive-chat-config
+              mountPath: /app/config
+      volumes:
+        - name: reactive-chat-config
+          configMap:
+            name: reactive-chat-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reactive-chat
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8080
+  selector:
+    app: reactive-chat
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: reactive-chat-ingress
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+    - host: reactive-chat.local
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: reactive-chat
+              servicePort: 8080

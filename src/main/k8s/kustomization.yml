@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonLabels:
+  app: reactive-chat
+resources:
+  - reactive-chat-deployment.yml
+#patchesStrategicMerge:
+#  - patch/memorylimit_patch.yml
+configMapGenerator:
+  - name: reactive-chat-config
+    files:
+      - config/application.yml

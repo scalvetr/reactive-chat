@@ -1,0 +1,27 @@
+spring:
+  # dummy security config with user/password
+  security:
+    user:
+      name: user
+      password: password
+
+  cloud:
+    stream:
+      default-binder: kafka
+      kafka:
+        binder:
+          brokers:
+            - kafka-broker-0:9092
+            - kafka-broker-1:9092
+            - kafka-broker-2:9092
+      bindings:
+        input:
+          binder: kafka
+          destination: messages
+          content-type: application/json
+          group: reactive-chat-group
+        output:
+          binder: kafka
+          destination: messages
+          group: reactive-chat-group
+          content-type: application/json
