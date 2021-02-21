@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:12-alpine
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: 'reactive-chat'
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'password'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  reactive-chat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: build/libs/reactive-chat-0.0.1-SNAPSHOT.jar
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_HOST: 'postgres'
+      POSTGRES_PORT: '5432'
+      POSTGRESQL_SCHEMA: 'public'
+      POSTGRES_DB: 'reactive-chat'
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'password'
+      SPRING_PROFILES_ACTIVE: 'local,docker'
+    ports:
+      - '8080:8080'
+
+volumes:
+  postgres-data:

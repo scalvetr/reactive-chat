@@ -34,3 +34,8 @@ build/
 
 ### Gradle ###
 .gradle/
+
+### web app module
+/webapp/node_modules/
+/webapp/build/
+/webapp/dist/

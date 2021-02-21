@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: scalvetr
+      changes:
+        - createTable:
+            tableName: messages
+            columns:
+              - column:
+                  name: id
+                  type: varchar(60)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: content
+                  type: varchar(2000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content_type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sent
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(60)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_avatar_image_link
+                  type: varchar(256)
+                  constraints:
+                    nullable: false

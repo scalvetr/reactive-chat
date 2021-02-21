@@ -1,40 +1,68 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.github.gradle.node.npm.task.NpmTask
 
 plugins {
-	id("org.springframework.boot") version "2.3.4.RELEASE"
+	id("org.springframework.boot") version "2.4.2"
 	id("io.spring.dependency-management") version "1.0.10.RELEASE"
-	kotlin("jvm") version "1.4.10"
-	kotlin("plugin.spring") version "1.4.10"
+	id("com.github.node-gradle.node") version "3.0.1"
+	kotlin("jvm") version "1.4.30"
+	kotlin("plugin.spring") version "1.4.30"
 }
 
-group = "com.github.scalvet"
+group = "com.github.scalvetr"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
 	mavenCentral()
+	maven("https://dl.bintray.com/jetbrains/markdown")
 }
 
-extra["springCloudVersion"] = "Hoxton.SR5"
+extra["springCloudVersion"] = "2020.0.1"
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+	implementation(project(":webapp"))
+
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
-	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-rsocket")
+	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-	implementation("org.apache.kafka:kafka-streams")
+	implementation("com.github.javafaker:javafaker:1.0.2")
+
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-	implementation("org.springframework.cloud:spring-cloud-stream")
-	implementation("org.springframework.cloud:spring-cloud-stream-binder-kafka-streams")
-	testImplementation("org.springframework.boot:spring-boot-starter-test") {
-		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-	}
-	testImplementation("io.projectreactor:reactor-test")
-	testImplementation("org.springframework.cloud:spring-cloud-stream-test-support")
-	testImplementation("org.springframework.security:spring-security-test")
+
+	implementation("org.jetbrains:markdown:0.1.45")
+
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("app.cash.turbine:turbine:0.3.0") // testing library for kotlin coroutines
+
+	// r2dbc driver
+	runtimeOnly("io.r2dbc:r2dbc-postgresql")
+
+	// liquibase jdbc
+	implementation("org.liquibase:liquibase-core")
+	runtimeOnly("org.postgresql:postgresql")
+	runtimeOnly("org.springframework:spring-jdbc")
+
+
+	// TODO switch to MongoDB
+	//implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+
+	// no security
+	//implementation("org.springframework.boot:spring-boot-starter-security")
+	//implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+	//testImplementation("org.springframework.security:spring-security-test")
+
+	// no cloud stream
+	//implementation("org.springframework.cloud:spring-cloud-stream")
+	//implementation("org.springframework.cloud:spring-cloud-stream-binder-kafka")
+	//testImplementation("org.springframework.cloud:spring-cloud-stream-test-support")
 }
 
 dependencyManagement {

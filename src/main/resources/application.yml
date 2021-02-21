@@ -1,27 +1,24 @@
 spring:
-  # dummy security config with user/password
-  security:
-    user:
-      name: user
-      password: password
+  r2dbc:
+    url: r2dbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:reactive-chat}
+    username: ${POSTGRES_USER:user}
+    password: ${POSTGRES_PASSWORD:password}
+    pool:
+      enabled: true
+    properties:
+      schema: ${POSTGRES_SCHEMA:public}
 
-  cloud:
-    stream:
-      default-binder: kafka
-      kafka:
-        binder:
-          brokers:
-            - kafka-broker-0:9092
-            - kafka-broker-1:9092
-            - kafka-broker-2:9092
-      bindings:
-        input:
-          binder: kafka
-          destination: messages
-          content-type: application/json
-          group: reactive-chat-group
-        output:
-          binder: kafka
-          destination: messages
-          group: reactive-chat-group
-          content-type: application/json
+
+  liquibase:
+    enabled: true
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:reactive-chat}
+    default-schema: ${POSTGRES_SCHEMA:public}
+    user: ${POSTGRES_USER:user}
+    password: ${POSTGRES_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+
+  rsocket:
+    server:
+      transport: websocket
+      mapping-path: "/rsocket"
+
