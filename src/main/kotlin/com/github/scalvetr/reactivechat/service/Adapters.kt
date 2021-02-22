@@ -16,16 +16,16 @@ import org.intellij.markdown.parser.MarkdownParser
 fun Message.asDomainObject(contentType: ContentTypeEnum = ContentTypeEnum.MARKDOWN): MessageEntity = MessageEntity(
     content,
     contentType,
-    sent,
-    user.name,
-    user.avatarImageLink.toString(),
+    timestamp,
+    sender.name,
+    sender.avatarImageLink.toString(),
     id
 )
 
 fun MessageEntity.asViewModel(): Message = Message(
     contentType.render(content),
     User(username, URL(userAvatarImageLink)),
-    sent,
+    timestamp,
     id
 )
 fun Message.asRendered(contentType: ContentTypeEnum = ContentTypeEnum.MARKDOWN): Message =

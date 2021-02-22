@@ -8,7 +8,7 @@ import java.time.Instant
 data class MessageEntity(
     val content: String,
     val contentType: ContentTypeEnum,
-    val sent: Instant,
+    val timestamp: Instant,
     val username: String,
     val userAvatarImageLink: String,
     @Id var id: String? = null

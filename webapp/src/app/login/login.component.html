@@ -1,0 +1,33 @@
+<div class="login-form">
+  <form #f="ngForm" (ngSubmit)="onSubmit(f)" novalidate>
+    <h2 class="text-center">Log in</h2>
+    <div class="form-group">
+      <input name="username" type="text" class="form-control" placeholder="Username" required="required"
+             [(ngModel)]="username" #field_username="ngModel">
+    </div>
+    <div class="form-group">
+      <input name="password" type="password" class="form-control" placeholder="Password" required="required"
+             [(ngModel)]="password" #field_password="ngModel">
+    </div>
+    <div class="form-group">
+      <button class="btn btn-primary btn-block">Log in</button>
+    </div>
+    <div class="clearfix">
+      <label class="float-left form-check-label"><input type="checkbox"> Remember me</label>
+      <a href="#" class="float-right">Forgot Password?</a>
+    </div>
+
+    <div *ngIf="(field_username.invalid && (field_username.dirty || field_username.touched)) || (field_password.invalid && (field_password.dirty || field_password.touched))"
+         class="alert alert-danger">
+
+      <div *ngIf="field_username.invalid && field_username.errors?.required">
+        Username is required.
+      </div>
+      <div *ngIf="field_password.invalid && field_password.errors?.required">
+        Password is required.
+      </div>
+
+    </div>
+  </form>
+  <p class="text-center"><a href="#">Create an Account</a></p>
+</div>
