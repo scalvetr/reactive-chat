@@ -5,8 +5,7 @@
 export const environment = {
   production: false,
   messagesService: {
-    postMessage: 'http://localhost:8080/messages',
-    getMessagesStream: 'http://localhost:8080/messages',
-    rsocketEndpoint: 'ws://localhost:8080/rsocket'
+    rsocketUrl: 'ws://localhost:8080/rsocket',
+    messagesEndpoint: 'api.v1.messages.stream'
   }
 };

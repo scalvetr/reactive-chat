@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {Message} from './message.model';
 import {HttpClient} from '@angular/common/http';
-import {JsonSerializers, RSocketClient} from 'rsocket-core';
+import {encodeAndAddWellKnownMetadata, JsonSerializers, MESSAGE_RSOCKET_ROUTING, RSocketClient} from 'rsocket-core';
 import RSocketWebSocketClient from 'rsocket-websocket-client';
-import {Payload, ReactiveSocket, ISubscription} from 'rsocket-types';
+import {ISubscription, Payload, ReactiveSocket} from 'rsocket-types';
 import {environment} from '../../environments/environment';
 
 @Injectable({
@@ -33,7 +33,27 @@ export class MessageService {
     return this.receiverSubject.asObservable();
   }
 
+  private encodeRoute(route: string): Buffer {
+    const length = Buffer.byteLength(route, 'utf8');
+    const buffer = Buffer.alloc(1);
+    buffer.writeInt8(length, 0);
+    return Buffer.concat([buffer, Buffer.from(route, 'utf8')]);
+  }
+
   public initSocket(): void {
+    const messagesEndpoint = environment.messagesService.messagesEndpoint;
+    const routingMetadata = encodeAndAddWellKnownMetadata(
+      Buffer.alloc(0),
+      MESSAGE_RSOCKET_ROUTING,
+      this.encodeRoute(messagesEndpoint)
+    );
+    let rsocketUrl = environment.messagesService.rsocketUrl;
+    if (rsocketUrl.startsWith('/')) {
+      const l = window.location;
+      rsocketUrl = ((l.protocol === 'https:') ? 'wss://' : 'ws://') + l.hostname +
+        (((l.port !== '80') && (l.port !== '443')) ? ':' + l.port : '') +
+        rsocketUrl;
+    }
     const client = new RSocketClient({
       // send/receive objects instead of strings/buffers
       serializers: JsonSerializers,
@@ -48,7 +68,7 @@ export class MessageService {
         metadataMimeType: 'application/json',
       },
       transport: new RSocketWebSocketClient({
-        url: environment.messagesService.rsocketEndpoint,
+        url: rsocketUrl,
         wsCreator: (url: string) => {
           return new WebSocket(url);
         }
@@ -59,7 +79,7 @@ export class MessageService {
     client.connect().subscribe({
       onComplete: (socket: ReactiveSocket<Message, any>) => {
         // The data and metadata parameters could be used by the handler() payload parameter on the back end side
-        socket.requestStream({data: undefined, metadata: ''}).subscribe({
+        socket.requestStream({data: undefined, metadata: routingMetadata}).subscribe({
           onComplete: () => {
             console.log('onComplete()');
           },
@@ -77,7 +97,7 @@ export class MessageService {
         });
         self.senderSubject.asObservable().subscribe(
           newMessage => {
-            socket.fireAndForget({data: newMessage, metadata: ''});
+            socket.fireAndForget({data: newMessage, metadata: routingMetadata});
           },
           error => { // second parameter is to listen for error
             console.log(error);
