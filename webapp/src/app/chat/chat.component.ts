@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Message} from '../shared/message.model';
 import {MessageService} from '../shared/message.service';
 import {NgForm} from '@angular/forms';
@@ -23,7 +23,7 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser() || '--';
     this.messages = [];
-    this.messageService.messagesSubscribe().subscribe(
+    this.messageService.messagesObservable().subscribe(
       success => {
         this.error = null;
         this.messages.push(success);
@@ -34,14 +34,15 @@ export class ChatComponent implements OnInit {
       }
     );
   }
+
   onSubmit(f: NgForm): void {
     console.log(f.valid);
     if (f.valid) {
       const newMessage = new Message(this.currentUser, this.textbox, new Date());
       newMessage.sender = this.currentUser;
       this.messageService.sendMessage(newMessage).subscribe(
-        success => {
-          console.log('successfully sent, status = ' + success.status);
+        message => {
+          console.log('successfully sent = ' + message);
           this.textbox = '';
         },
         error => { // second parameter is to listen for error
