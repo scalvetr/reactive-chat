@@ -2,29 +2,27 @@
 
 
 
-https://medium.com/swlh/angular-spring-boot-kafka-how-to-stream-realtime-data-the-reactive-way-510a0f1e5881
-https://github.com/davemaier/reactivekafkaserver
-https://github.com/davemaier/reactivekafkaclient
-
-https://www.baeldung.com/spring-5-reactive-websockets
-https://dzone.com/articles/kafka-with-spring-cloud-stream
-https://dzone.com/articles/build-a-chat-application-using-spring-boot-websock
-
-https://projectreactor.io/docs/core/release/reference/
-
-https://github.com/reactor/reactor-kafka/
-
-https://cloud.spring.io/spring-cloud-static/spring-cloud-stream-binder-kafka/3.0.4.RELEASE/reference/html/spring-cloud-stream-binder-kafka.html#_configuration_options
-
-
-https://spring.io/guides/tutorials/spring-webflux-kotlin-rsocket/
-
-https://medium.com/swlh/building-a-chat-application-with-angular-and-spring-rsocket-3cd8013f2f55
-https://github.com/hantsy/angular-spring-rsocket-sample
-
-
 ## UI
 ```shell
 brew install node
 npm install -g @angular/cli
 ```
+
+## Useful links
+
+**RSocket**
+
+* https://spring.io/guides/tutorials/spring-webflux-kotlin-rsocket/ -> [Github](https://github.com/spring-guides/tut-spring-webflux-kotlin-rsocket)
+* https://medium.com/swlh/building-a-chat-application-with-angular-and-spring-rsocket-3cd8013f2f55  -> [Github](https://github.com/hantsy/angular-spring-rsocket-sample)
+
+**Spring Boot + Kafka Reactive**
+
+* https://medium.com/swlh/angular-spring-boot-kafka-how-to-stream-realtime-data-the-reactive-way-510a0f1e5881 -> [Github - client](https://github.com/davemaier/reactivekafkaclient) [Github - server](https://github.com/davemaier/reactivekafkaserver)
+* https://dzone.com/articles/kafka-with-spring-cloud-stream
+* https://github.com/reactor/reactor-kafka/
+* https://cloud.spring.io/spring-cloud-static/spring-cloud-stream-binder-kafka/3.0.4.RELEASE/reference/html/spring-cloud-stream-binder-kafka.html#_configuration_options
+
+**Spring & Web Sockets**
+
+* https://www.baeldung.com/spring-5-reactive-websockets
+* https://dzone.com/articles/build-a-chat-application-using-spring-boot-websock

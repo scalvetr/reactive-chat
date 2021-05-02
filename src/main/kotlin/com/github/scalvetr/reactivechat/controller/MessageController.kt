@@ -1,7 +1,7 @@
 package com.github.scalvetr.reactivechat.controller
 
-import com.github.scalvetr.reactivechat.service.model.Message
 import com.github.scalvetr.reactivechat.service.MessageService
+import com.github.scalvetr.reactivechat.service.model.Message
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.onStart
@@ -14,8 +14,9 @@ import org.springframework.stereotype.Controller
 class MessageController(val messageService: MessageService) {
 
     @MessageMapping("stream")
-    suspend fun receive(@Payload inboundMessages: Flow<Message>) =
-        messageService.post(inboundMessages)
+    suspend fun receive(
+        @Payload inboundMessages: Flow<Message>
+    ) = messageService.post(inboundMessages)
 
     @MessageMapping("stream")
     fun send(): Flow<Message> = messageService

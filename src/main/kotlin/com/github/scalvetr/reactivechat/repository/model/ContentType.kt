@@ -1,5 +1,5 @@
 package com.github.scalvetr.reactivechat.repository.model
 
-enum class ContentTypeEnum {
+enum class ContentType {
     PLAIN, MARKDOWN
 }

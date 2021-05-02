@@ -10,21 +10,16 @@ interface MessageRepository : CoroutineCrudRepository<MessageEntity, String> {
 
     // language=SQL
     @Query("""
-        SELECT * FROM (
-            SELECT * FROM MESSAGES
-            ORDER BY "SENT" DESC
-            LIMIT 10
-        ) ORDER BY "SENT"
+        SELECT * FROM messages
+        ORDER BY sent ASC
     """)
     fun findLatest(): Flow<MessageEntity>
 
     // language=SQL
     @Query("""
-        SELECT * FROM (
-            SELECT * FROM MESSAGES
-            WHERE SENT > (SELECT SENT FROM MESSAGES WHERE ID = :id)
-            ORDER BY "SENT" DESC 
-        ) ORDER BY "SENT"
+        SELECT * FROM messages
+        WHERE sent > (SELECT sent FROM messages WHERE id = :id)
+        ORDER BY sent ASC 
     """)
     fun findLatest(@Param("id") id: String): Flow<MessageEntity>
 }

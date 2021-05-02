@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "2.4.2"
+	id("org.springframework.boot") version "2.4.5"
 	id("io.spring.dependency-management") version "1.0.10.RELEASE"
-	kotlin("jvm") version "1.4.30"
-	kotlin("plugin.spring") version "1.4.30"
+	kotlin("jvm") version "1.4.32"
+	kotlin("plugin.spring") version "1.4.32"
 }
 
 group = "com.github.scalvetr"
@@ -16,7 +16,7 @@ repositories {
 	maven("https://dl.bintray.com/jetbrains/markdown")
 }
 
-extra["springCloudVersion"] = "2020.0.1"
+extra["springCloudVersion"] = "2020.0.2"
 
 dependencies {
 	implementation(project(":webapp"))
@@ -38,7 +38,11 @@ dependencies {
 	implementation("org.jetbrains:markdown:0.1.45")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("app.cash.turbine:turbine:0.3.0") // testing library for kotlin coroutines
+	testImplementation("io.strikt:strikt-core:0.31.0")
+
+	testImplementation("app.cash.turbine:turbine:0.4.1") // testing library for kotlin coroutines
+	testImplementation("org.testcontainers:postgresql:1.15.3")
+
 
 	// r2dbc driver
 	runtimeOnly("io.r2dbc:r2dbc-postgresql")
