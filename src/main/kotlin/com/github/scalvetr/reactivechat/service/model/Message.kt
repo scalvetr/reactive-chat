@@ -2,4 +2,4 @@ package com.github.scalvetr.reactivechat.service.model
 
 import java.time.Instant
 
-data class Message(val content: String, val sender: User, val sent: Instant, val id: Long? = null)
+data class Message(val sender: User, val content: String, val timestamp: Instant, val id: Long? = null)

@@ -103,8 +103,8 @@ class MessageControllerITest(
                     expectThat(expectItem().prepareForTesting())
                         .isEqualTo(
                             Message(
-                                "*testMessage*",
                                 User("test", URL("http://test.com")),
+                                "*testMessage*",
                                 now.minusSeconds(2).truncatedTo(MILLIS)
                             )
                         )
@@ -112,16 +112,16 @@ class MessageControllerITest(
                     expectThat(expectItem().prepareForTesting())
                         .isEqualTo(
                             Message(
-                                "<body><p><strong>testMessage2</strong></p></body>",
                                 User("test1", URL("http://test.com")),
+                                "<body><p><strong>testMessage2</strong></p></body>",
                                 now.minusSeconds(1).truncatedTo(MILLIS)
                             )
                         )
                     expectThat(expectItem().prepareForTesting())
                         .isEqualTo(
                             Message(
-                                "<body><p><code>testMessage3</code></p></body>",
                                 User("test2", URL("http://test.com")),
+                                "<body><p><code>testMessage3</code></p></body>",
                                 now.truncatedTo(MILLIS)
                             )
                         )
@@ -132,8 +132,8 @@ class MessageControllerITest(
                             .dataWithType(flow {
                                 emit(
                                     Message(
-                                        "`HelloWorld`",
                                         User("test", URL("http://test.com")),
+                                        "`HelloWorld`",
                                         now.plusSeconds(1)
                                     )
                                 )
@@ -145,8 +145,8 @@ class MessageControllerITest(
                     expectThat(expectItem().prepareForTesting())
                         .isEqualTo(
                             Message(
-                                "<body><p><code>HelloWorld</code></p></body>",
                                 User("test", URL("http://test.com")),
+                                "<body><p><code>HelloWorld</code></p></body>",
                                 now.plusSeconds(1).truncatedTo(MILLIS)
                             )
                         )
@@ -168,8 +168,8 @@ class MessageControllerITest(
                     .dataWithType(flow {
                         emit(
                             Message(
-                                "`HelloWorld`",
                                 User("test", URL("http://test.com")),
+                                "`HelloWorld`",
                                 now.plusSeconds(1)
                             )
                         )

@@ -3,6 +3,7 @@ import {Message} from '../shared/message.model';
 import {MessageService} from '../shared/message.service';
 import {NgForm} from '@angular/forms';
 import {AuthService} from '../shared/auth.service';
+import {User} from '../shared/user.model';
 
 @Component({
   selector: 'app-chat',
@@ -12,7 +13,7 @@ import {AuthService} from '../shared/auth.service';
 export class ChatComponent implements OnInit {
   error: string | null = null;
   textbox = '';
-  currentUser = '--';
+  currentUser: User | null = null;
   messages: Message[] = new Array();
 
   constructor(
@@ -21,7 +22,7 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser() || '--';
+    this.currentUser = this.authService.getCurrentUser();
     this.messages = [];
     this.messageService.messagesObservable().subscribe(
       success => {
@@ -37,9 +38,8 @@ export class ChatComponent implements OnInit {
 
   onSubmit(f: NgForm): void {
     console.log(f.valid);
-    if (f.valid) {
+    if (f.valid && this.currentUser != null) {
       const newMessage = new Message(this.currentUser, this.textbox, new Date());
-      newMessage.sender = this.currentUser;
       this.messageService.sendMessage(newMessage).subscribe(
         message => {
           console.log('successfully sent = ' + message);

@@ -3,5 +3,8 @@ export const environment = {
   messagesService: {
     rsocketUrl: '/rsocket',
     messagesEndpoint: 'api.v1.messages.stream'
+  },
+  authService: {
+    avatarBaseUrl: '/avatars/'
   }
 };

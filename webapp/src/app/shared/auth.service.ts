@@ -1,21 +1,31 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
+import {User} from './user.model';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUser: string | null = null;
+  private currentUser: User | null = null;
 
   constructor(private router: Router) {
   }
 
-  getCurrentUser(): string | null{
+  getCurrentUser(): User | null {
     return this.currentUser;
   }
 
   login(user: string, password: string): void {
-    this.currentUser = user;
+
+    let avatarBaseUrl = environment.authService.avatarBaseUrl;
+    if (avatarBaseUrl.startsWith('/')) {
+      const l = window.location;
+      avatarBaseUrl = l.protocol + '//' + l.hostname +
+        (((l.port !== '80') && (l.port !== '443')) ? ':' + l.port : '') +
+        avatarBaseUrl;
+    }
+    this.currentUser = new User(user, avatarBaseUrl + user);
     console.log('user ' + user + 'logged in');
     this.router.navigate(['/']);
   }

@@ -17,14 +17,14 @@ fun Message.asDomainObject(contentType: ContentType = ContentType.MARKDOWN): Mes
     id,
     content,
     contentType,
-    sent,
+    timestamp,
     sender.name,
     sender.avatarImageLink.toString()
 )
 
 fun MessageEntity.asViewModel(): Message = Message(
-    contentType.render(content),
     User(username, URL(userAvatarImageLink)),
+    contentType.render(content),
     sent,
     id
 )
