@@ -30,8 +30,8 @@ import java.net.URI
 import java.net.URL
 import java.time.Instant
 import java.time.temporal.ChronoUnit.MILLIS
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
@@ -42,7 +42,7 @@ class MessageControllerITest(
     @LocalServerPort val serverPort: Int
 ) : PostgreSqlContainer() {
     var lastMessageId: Long? = null
-    val now: Instant = Instant.now()
+    val now: Instant = Instant.now().truncatedTo(MILLIS)
 
     @BeforeEach
     fun setUp() {
@@ -54,7 +54,7 @@ class MessageControllerITest(
                     MessageEntity(
                         null,
                         "*testMessage*",
-                        ContentType.PLAIN,
+                        ContentType.PLAINTEXT,
                         twoSecondBeforeNow,
                         "test",
                         "http://test.com"
@@ -105,7 +105,7 @@ class MessageControllerITest(
                             Message(
                                 User("test", URL("http://test.com")),
                                 "*testMessage*",
-                                now.minusSeconds(2).truncatedTo(MILLIS)
+                                now.minusSeconds(2)
                             )
                         )
 
@@ -114,7 +114,7 @@ class MessageControllerITest(
                             Message(
                                 User("test1", URL("http://test.com")),
                                 "<body><p><strong>testMessage2</strong></p></body>",
-                                now.minusSeconds(1).truncatedTo(MILLIS)
+                                now.minusSeconds(1)
                             )
                         )
                     expectThat(expectItem().prepareForTesting())
@@ -122,7 +122,7 @@ class MessageControllerITest(
                             Message(
                                 User("test2", URL("http://test.com")),
                                 "<body><p><code>testMessage3</code></p></body>",
-                                now.truncatedTo(MILLIS)
+                                now
                             )
                         )
                     expectNoEvents()
@@ -147,7 +147,7 @@ class MessageControllerITest(
                             Message(
                                 User("test", URL("http://test.com")),
                                 "<body><p><code>HelloWorld</code></p></body>",
-                                now.plusSeconds(1).truncatedTo(MILLIS)
+                                now.plusSeconds(1)
                             )
                         )
 
@@ -178,7 +178,7 @@ class MessageControllerITest(
                     .collect()
             }
 
-            delay(2.seconds)
+            delay(Duration.seconds(2))
 
             messageRepository.findAll()
                 .first { it.content.contains("HelloWorld") }
@@ -186,7 +186,7 @@ class MessageControllerITest(
                     expectThat(this.prepareForTesting()) {
                         get { content } isEqualTo "`HelloWorld`"
                         get { contentType } isEqualTo ContentType.MARKDOWN
-                        get { sent } isEqualTo now.plusSeconds(1).truncatedTo(MILLIS)
+                        get { sent } isEqualTo now.plusSeconds(1)
                         get { username } isEqualTo "test"
                         get { userAvatarImageLink } isEqualTo "http://test.com"
                     }

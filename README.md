@@ -1,6 +1,13 @@
 # reactive-chat
 
 
+## Run
+```shell
+docker-compose up -d postgres
+#./mvnw spring-boot:run
+./gradlew bootRun
+```
+
 
 ## UI
 ```shell

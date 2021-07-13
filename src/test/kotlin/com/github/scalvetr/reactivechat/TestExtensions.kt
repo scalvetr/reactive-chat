@@ -6,4 +6,4 @@ import java.time.temporal.ChronoUnit.MILLIS
 
 fun MessageEntity.prepareForTesting() = copy(id = null, sent = sent.truncatedTo(MILLIS))
 
-fun Message.prepareForTesting() = copy(id = null, sent = sent.truncatedTo(MILLIS))
+fun Message.prepareForTesting() = copy(id = null)

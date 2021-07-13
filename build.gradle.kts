@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "2.4.5"
-	id("io.spring.dependency-management") version "1.0.10.RELEASE"
-	kotlin("jvm") version "1.4.32"
-	kotlin("plugin.spring") version "1.4.32"
+	id("org.springframework.boot") version "2.5.2"
+	id("io.spring.dependency-management") version "1.0.11.RELEASE"
+	kotlin("jvm") version "1.5.20"
+	kotlin("plugin.spring") version "1.5.20"
 }
 
 group = "com.github.scalvetr"
@@ -13,10 +13,9 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
 	mavenCentral()
-	maven("https://dl.bintray.com/jetbrains/markdown")
 }
 
-extra["springCloudVersion"] = "2020.0.2"
+extra["springCloudVersion"] = "2020.0.3"
 
 dependencies {
 	implementation(project(":webapp"))
@@ -27,7 +26,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("com.github.javafaker:javafaker:1.0.2")
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -35,12 +33,12 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-	implementation("org.jetbrains:markdown:0.1.45")
+	implementation("org.jetbrains:markdown:0.2.4")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.strikt:strikt-core:0.31.0")
 
-	testImplementation("app.cash.turbine:turbine:0.4.1") // testing library for kotlin coroutines
+	testImplementation("app.cash.turbine:turbine:0.5.2") // testing library for kotlin coroutines
 	testImplementation("org.testcontainers:postgresql:1.15.3")
 
 
