@@ -1,18 +1,53 @@
-# reactive-chat
+# Reactive Chat
 
+## :computer: Build project
 
-## Run
+### Prerequisites
+Node + Angular CLI
+```shell
+brew install node
+npm install -g @angular/cli
+```
+
+### Project
+Build & test
+```shell
+./gradlew build
+```
+Package jar & build docker image
+```shell
+./gradlew bootJar
+# build image
+docker build . --build-arg JAR_FILE=build/libs/reactive-chat.jar -t reactive-chat
+
+```
+
+### UI only
+Angular SPA
+```shell
+# build
+cd webapp
+ng build
+
+# test
+ng serve
+```
+
+## :running_man: Run
+Gradle 
 ```shell
 docker-compose up -d postgres
 #./mvnw spring-boot:run
 ./gradlew bootRun
+
+curl http://localhost:8080/actuator/health
 ```
 
-
-## UI
+Docker Compose
 ```shell
-brew install node
-npm install -g @angular/cli
+docker-compose up
+
+curl http://localhost:8080/actuator/health
 ```
 
 ## Useful links
