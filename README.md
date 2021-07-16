@@ -52,6 +52,10 @@ curl http://localhost:8080/actuator/health
 
 ## Useful links
 
+**Gradle Node Plugin**
+
+* https://github.com/node-gradle/gradle-node-plugin/blob/3.1.0/README.md
+
 **RSocket**
 
 * https://spring.io/guides/tutorials/spring-webflux-kotlin-rsocket/ -> [Github](https://github.com/spring-guides/tut-spring-webflux-kotlin-rsocket)
