@@ -2,7 +2,7 @@ import com.github.gradle.node.npm.task.NpxTask
 
 plugins {
   java
-  id("com.github.node-gradle.node") version "3.0.1"
+  id("com.github.node-gradle.node") version "3.1.0"
 }
 
 val lintTask = tasks.register<NpxTask>("lintWebapp") {
