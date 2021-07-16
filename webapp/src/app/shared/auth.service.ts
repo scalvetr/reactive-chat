@@ -25,7 +25,9 @@ export class AuthService {
         (((l.port !== '80') && (l.port !== '443')) ? ':' + l.port : '') +
         avatarBaseUrl;
     }
-    this.currentUser = new User(user, avatarBaseUrl + user);
+    // const avatar = user;
+    const avatar = 'default.png';
+    this.currentUser = new User(user, avatarBaseUrl + avatar);
     console.log('user ' + user + 'logged in');
     this.router.navigate(['/']);
   }
