@@ -34,8 +34,6 @@ fun Message.asRendered(contentType: ContentType = ContentType.MARKDOWN): Message
 
 fun Flow<MessageEntity>.mapToViewModel(): Flow<Message> = map { it.asViewModel() }
 
-fun List<MessageEntity>.mapToViewModel(): List<Message> = map { it.asViewModel() }
-
 fun ContentType.render(content: String): String = when (this) {
     ContentType.PLAINTEXT -> content
     ContentType.MARKDOWN -> {
