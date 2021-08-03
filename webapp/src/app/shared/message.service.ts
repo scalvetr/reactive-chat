@@ -21,9 +21,9 @@ export class MessageService {
   // data from the backend (if available). If the data flow is intense and the client has hiccups
   // it ca freeze the client and the websocketconnection dies on the server side (DirectMemoryError).
   // We'll set it to a mere 1, and continually request the next one. Performance wise this should be higher.
-  readonly SINGLE_REQ = 1;
+  readonly NUMBER_OF_REQUESTED_ITEMS = 100;
 
-  private counter = this.SINGLE_REQ;
+  private counter = this.NUMBER_OF_REQUESTED_ITEMS;
   private paused = false;
 
   constructor(private http: HttpClient) {
@@ -73,27 +73,33 @@ export class MessageService {
       })
     });
     const self = this;
+
     // Connect to the back end RSocket and request a stream (connects to the handler() method in NewsSocket.kt)
     client.connect().subscribe({
       onComplete: (socket: ReactiveSocket<Message, any>) => {
         // The data and metadata parameters could be used by the handler() payload parameter on the back end side
         const sender = this.senderSubject.asObservable();
         const flowable: Flowable<Message> = new Flowable<Message>(source => {
-          console.log('channel');
+          console.log('build flowable sender');
           source.onSubscribe({
             cancel: () => {
+              console.log('source.onSubscribe.cancel()');
             },
             request: (n) => {
+              console.log('source.onSubscribe.request(%s)', n);
             }
           });
           sender.subscribe({
             next: value => {
+              console.log('sender.next(%s)', value);
               source.onNext(value);
             },
             error: error => {
+              console.log('sender.error(%s)', error);
               source.onError(error);
             },
             complete: () => {
+              console.log('sender.complete()');
               source.onComplete();
             }
           });
@@ -105,18 +111,22 @@ export class MessageService {
           };
         })).subscribe({
           onComplete: () => {
-            console.log('onComplete()');
+            console.log('requestChannel: onComplete()');
           },
           onError: (error: Error) => {
-            console.log('onError(%s)', error.message);
+            console.log('requestChannel: onError(%s)', error.message);
           },
           onNext: (payload: Payload<Message, any>) => {
+            console.log('requestChannel: onNext(%s)', payload);
             self.handlePayload(payload);
             self.requestMoreDataIfNeeded();
           },
           onSubscribe: (sub: ISubscription) => {
+            console.log('requestChannel: onSubscribe(%s)', sub);
             self.subscription = sub;
-            sub.request(self.SINGLE_REQ);
+            console.log('requestChannel: sub.request(%s)', self.NUMBER_OF_REQUESTED_ITEMS);
+            sub.request(self.NUMBER_OF_REQUESTED_ITEMS);
+            console.log('requestChannel: successfully requested');
           }
         });
       },
@@ -135,8 +145,8 @@ export class MessageService {
     if (!this.paused) {
       this.counter--;
       if (this.subscription != null && this.counter <= 0) {
-        this.subscription.request(this.SINGLE_REQ);
-        this.counter = this.SINGLE_REQ;
+        this.subscription.request(this.NUMBER_OF_REQUESTED_ITEMS);
+        this.counter = this.NUMBER_OF_REQUESTED_ITEMS;
       }
     }
   }
