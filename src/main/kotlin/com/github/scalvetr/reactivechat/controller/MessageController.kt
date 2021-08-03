@@ -14,9 +14,8 @@ import org.springframework.stereotype.Controller
 class MessageController(val messageService: MessageService) {
 
     @MessageMapping("stream")
-    suspend fun receive(
-        @Payload inboundMessages: Flow<Message>
-    ) = messageService.post(inboundMessages)
+    suspend fun receive(@Payload inboundMessages: Flow<Message>) =
+        messageService.post(inboundMessages)
 
     @MessageMapping("stream")
     fun send(): Flow<Message> = messageService
