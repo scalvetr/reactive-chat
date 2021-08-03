@@ -6,7 +6,9 @@
 Node + Angular CLI
 ```shell
 brew install node
-npm install -g @angular/cli
+npm install -g npm@7.20.3
+npm install -g @angular/cli@12.1.4
+npm install -g typescript@4.3.5
 ```
 
 ### Project
