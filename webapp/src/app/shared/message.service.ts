@@ -66,86 +66,90 @@ export class MessageService {
         metadataMimeType: 'message/x.rsocket.routing.v0'
       },
       transport: new RSocketWebSocketClient({
-        url: rsocketUrl,
-        wsCreator: (url: string) => {
-          return new WebSocket(url);
-        }
+        url: rsocketUrl
       })
     });
     const self = this;
 
+    // The data and metadata parameters could be used by the handler() payload parameter on the back end side
+    const sender = this.senderSubject.asObservable();
+    const flowable: Flowable<Message> = new Flowable<Message>(source => {
+      console.log('build flowable sender');
+      source.onSubscribe({
+        cancel: () => {
+          console.log('source.onSubscribe.cancel()');
+        },
+        request: (n) => {
+          console.log('source.onSubscribe.request(%s)', n);
+        }
+      });
+      sender.subscribe({
+        next: value => {
+          console.log('sender.next(%s)', value);
+          source.onNext(value);
+        },
+        error: error => {
+          console.log('sender.error(%s)', error);
+          source.onError(error);
+        },
+        complete: () => {
+          console.log('sender.complete()');
+          source.onComplete();
+        }
+      });
+    });
     // Connect to the back end RSocket and request a stream (connects to the handler() method in NewsSocket.kt)
-    client.connect().subscribe({
-      onComplete: (socket: ReactiveSocket<Message, any>) => {
-        // The data and metadata parameters could be used by the handler() payload parameter on the back end side
-        const sender = this.senderSubject.asObservable();
-        const flowable: Flowable<Message> = new Flowable<Message>(source => {
-          console.log('build flowable sender');
-          source.onSubscribe({
-            cancel: () => {
-              console.log('source.onSubscribe.cancel()');
-            },
-            request: (n) => {
-              console.log('source.onSubscribe.request(%s)', n);
-            }
-          });
-          sender.subscribe({
-            next: value => {
-              console.log('sender.next(%s)', value);
-              source.onNext(value);
-            },
-            error: error => {
-              console.log('sender.error(%s)', error);
-              source.onError(error);
-            },
-            complete: () => {
-              console.log('sender.complete()');
-              source.onComplete();
-            }
-          });
-        });
+
+    client.connect().then((socket: ReactiveSocket<any, any>) => {
+        /*
+        socket.requestStream({
+          metadata: routingMetadata,
+          data: undefined
+        })*/
         socket.requestChannel(flowable.map(message => {
           return {
             metadata: routingMetadata,
             data: message
           };
-        })).subscribe({
-          onComplete: () => {
-            console.log('requestChannel: onComplete()');
-          },
-          onError: (error: Error) => {
-            console.log('requestChannel: onError(%s)', error.message);
-          },
-          onNext: (payload: Payload<Message, any>) => {
-            console.log('requestChannel: onNext(%s)', payload);
-            self.handlePayload(payload);
-            self.requestMoreDataIfNeeded();
-          },
-          onSubscribe: (sub: ISubscription) => {
-            console.log('requestChannel: onSubscribe(%s)', sub);
-            self.subscription = sub;
-            console.log('requestChannel: sub.request(%s)', self.NUMBER_OF_REQUESTED_ITEMS);
-            sub.request(self.NUMBER_OF_REQUESTED_ITEMS);
-            console.log('requestChannel: successfully requested');
-          }
-        });
-      },
-      onError: error => console.error(error),
-      onSubscribe: cancel => {/* call cancel() to abort */
-      }
-    });
+        }))
+        .subscribe({
+        onComplete: () => {
+          console.log('requestChannel: onComplete()');
+        },
+        onError: (error: Error) => {
+          console.log('requestChannel: onError(%s)', error.message);
+        },
+        onNext: payload => {
+          console.log('requestChannel: onNext(%s)', payload);
+          self.handlePayload(payload);
+          self.requestMoreDataIfNeeded();
+        },
+        onSubscribe: (sub: ISubscription) => {
+          console.log('requestChannel: onSubscribe(%s)', sub);
+          self.subscription = sub;
+          console.log('requestChannel: sub.request(%s)', self.NUMBER_OF_REQUESTED_ITEMS);
+          sub.request(self.NUMBER_OF_REQUESTED_ITEMS);
+          console.log('requestChannel: successfully requested');
+        }
+      });
+    }, error => console.error(error));
+    this.senderSubject.next(undefined);
   }
 
 
   private handlePayload(payload: Payload<Message, any>): void {
+    console.log('handlePayload: ' + payload.data);
     this.receiverSubject.next(payload.data);
   }
 
   private requestMoreDataIfNeeded(): void {
+    console.log('requestMoreDataIfNeeded: ' + !this.paused);
     if (!this.paused) {
       this.counter--;
+      console.log('requestMoreDataIfNeeded: counter=' + this.counter);
       if (this.subscription != null && this.counter <= 0) {
         this.subscription.request(this.NUMBER_OF_REQUESTED_ITEMS);
+        console.log('requestMoreDataIfNeeded: sub.request(%s)', this.NUMBER_OF_REQUESTED_ITEMS);
         this.counter = this.NUMBER_OF_REQUESTED_ITEMS;
       }
     }
