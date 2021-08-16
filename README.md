@@ -52,6 +52,12 @@ docker-compose up
 curl http://localhost:8080/actuator/health
 ```
 
+Listen all RSocket messages
+
+```shell
+brew install yschimke/tap/rsocket-cli
+rsocket-cli --route=api.v1.messages.stream  ws://localhost:8080/rsocket
+```
 ## Useful links
 
 **Gradle Node Plugin**
