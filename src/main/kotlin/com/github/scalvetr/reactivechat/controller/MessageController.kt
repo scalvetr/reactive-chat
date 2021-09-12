@@ -23,7 +23,7 @@ class MessageController(val messageService: MessageService) {
      */
     /* https://stremler.io/2020-05-31-rsocket-messaging-with-spring-boot-and-rsocket-js/ */
     @MessageMapping(CHANNEL)
-    suspend fun channel(@Payload inboundMessages: Flow<Message>) = messageService.channel(inboundMessages)
+    fun channel(@Payload inboundMessages: Flow<Message>) = messageService.channel(inboundMessages)
 
 
     /**
