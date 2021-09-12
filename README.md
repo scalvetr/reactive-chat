@@ -14,7 +14,7 @@ npm install -g typescript@4.3.5
 ### Project
 Build & test
 ```shell
-./gradlew build
+./gradlew clean build
 ```
 Package jar & build docker image
 ```shell
@@ -58,7 +58,107 @@ Listen all RSocket messages
 brew install yschimke/tap/rsocket-cli
 rsocket-cli --route=api.v1.messages.stream  ws://localhost:8080/rsocket
 ```
-## Useful links
+
+## :jigsaw: Naming and modules
+
+**Build system:** gradle
+
+
+Modules:
+* Backend (reactive-chat)
+* Frontend (Webapp)
+
+
+Reactive chat includes the webapp module. Config:
+#### **`settings.gradle.kts`**
+The module is build.
+```kotlin
+include("webapp")
+```
+
+#### **`build.gradle.kts`**
+The module is included as a library `webapp.jar` in the generated Spring Boot application.
+```kotlin
+	implementation(project(":webapp"))
+```
+
+#### Build webapp node application
+
+The following plugin is used to build the angular application`com.github.node-gradle.node`.
+#### **`build.gradle.kts`**
+```kotlin
+plugins {
+    java
+    id("com.github.node-gradle.node") version "3.1.0"
+}
+```
+
+Plugin setup
+```kotlin
+val buildTask = tasks.register<NpxTask>("buildWebapp") {
+    command.set("ng")
+    args.set(listOf("build", "--prod"))
+    dependsOn(tasks.npmInstall, lintTask)
+    inputs.dir(project.fileTree("src").exclude("**/*.spec.ts"))
+    inputs.dir("node_modules")
+    inputs.files("angular.json", ".browserslistrc", "tsconfig.json", "tsconfig.app.json")
+    outputs.dir("${project.buildDir}/webapp")
+}
+
+
+sourceSets {
+    java {
+        main {
+            resources {
+                // This makes the processResources task automatically depend on the buildWebapp one
+                srcDir(buildTask)
+            }
+        }
+    }
+}
+```
+
+
+#### Webapp structure
+
+```bash
+unzip webapp.jar 
+> Archive:  webapp.jar
+>    creating: META-INF/
+>   inflating: META-INF/MANIFEST.MF    
+>    creating: static/
+>   inflating: static/polyfills.3e143dd5565bcc9a954f.js  
+>   inflating: static/favicon.ico      
+>   inflating: static/index.html       
+>   inflating: static/3rdpartylicenses.txt  
+>   inflating: static/styles.31d6cfe0d16ae931b73c.css  
+>   inflating: static/runtime.2ea037e6cf819e27a11c.js  
+>   inflating: static/main.6abaf37c83845abbf9e4.js  
+>    creating: static/assets/
+>    creating: static/assets/images/
+>   inflating: static/assets/images/user-profile.png
+```
+
+#### **`angular.json`**
+```json
+  "projects": {
+    "chat": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "build/webapp/static",
+```
+
+
+
+
+
+## :memo: Useful links
 
 **Gradle Node Plugin**
 
