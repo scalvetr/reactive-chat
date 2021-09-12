@@ -26,4 +26,15 @@ class PersistentMessageService(val messageRepository: MessageRepository) : Messa
             .map { it.asDomainObject() }
             .let { messageRepository.saveAll(it) }
             .collect()
+
+
+    override fun channel(messages: Flow<Message>): Flow<Message> {
+        // TODO fix: the returning flow only streams the messages received by the input messages flow. Not all the messages emitted to sender.
+        return messages
+            .onEach { sender.emit(it.asRendered()) }
+            .map { it.asDomainObject() }
+            .let { messageRepository.saveAll(it) }
+            .map { it.asViewModel() }
+
+    }
 }

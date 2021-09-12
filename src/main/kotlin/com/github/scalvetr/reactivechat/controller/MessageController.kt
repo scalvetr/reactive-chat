@@ -13,10 +13,25 @@ import org.springframework.stereotype.Controller
 @MessageMapping("api.v1.messages")
 class MessageController(val messageService: MessageService) {
 
+
+    /**
+     * Bi-Directional stream: rsocket client => requestChannel
+     */
+    /* https://stremler.io/2020-05-31-rsocket-messaging-with-spring-boot-and-rsocket-js/ */
+    @MessageMapping("channel")
+    suspend fun channel(@Payload inboundMessages: Flow<Message>) = messageService.channel(inboundMessages)
+
+
+    /**
+     * Inbound stream: rsocket client => requestResponse, fireAndForget, requestChannel (only sending)
+     */
     @MessageMapping("stream")
     suspend fun receive(@Payload inboundMessages: Flow<Message>) =
         messageService.post(inboundMessages)
 
+    /**
+     * Outbound stream: rsocket client => requestStream
+     */
     @MessageMapping("stream")
     fun send(): Flow<Message> = messageService
         .stream()

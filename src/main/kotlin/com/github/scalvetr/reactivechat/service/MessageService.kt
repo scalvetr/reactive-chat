@@ -12,4 +12,6 @@ interface MessageService {
     fun stream(): Flow<Message>
 
     suspend fun post(messages: Flow<Message>)
+
+    fun channel(messages: Flow<Message>): Flow<Message>
 }

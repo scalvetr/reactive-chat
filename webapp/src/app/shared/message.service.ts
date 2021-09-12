@@ -101,18 +101,18 @@ export class MessageService {
     // Connect to the back end RSocket and request a stream (connects to the handler() method in NewsSocket.kt)
 
     client.connect().then((socket: ReactiveSocket<any, any>) => {
-        /*
-        socket.requestStream({
+
+      /*
+      socket.requestStream({
+        metadata: routingMetadata,
+        data: undefined
+      })*/
+      socket.requestChannel(flowable.map(message => {
+        return {
           metadata: routingMetadata,
-          data: undefined
-        })*/
-        socket.requestChannel(flowable.map(message => {
-          return {
-            metadata: routingMetadata,
-            data: message
-          };
-        }))
-        .subscribe({
+          data: message
+        };
+      })).subscribe({
         onComplete: () => {
           console.log('requestChannel: onComplete()');
         },

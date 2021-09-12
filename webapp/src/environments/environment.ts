@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   messagesService: {
     rsocketUrl: 'ws://localhost:8080/rsocket',
-    messagesEndpoint: 'api.v1.messages.stream'
+    messagesEndpoint: 'api.v1.messages.channel'
   },
   authService: {
     avatarBaseUrl: 'http://localhost:8080/avatars/'
