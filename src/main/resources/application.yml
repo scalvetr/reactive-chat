@@ -23,3 +23,9 @@ spring:
       mapping-path: "/rsocket"
 
 
+logging:
+  level:
+    root: warn
+    io.rsocket: debug
+    org.springframework.r2dbc: debug
+    io.r2dbc.postgresql: debug
