@@ -39,8 +39,9 @@ export class MessageService {
   }
 
   public initSocket(): void {
-    const messagesEndpoint = environment.messagesService.messagesEndpoint;
-    const routingMetadata = this.encodeRoute(messagesEndpoint);
+    const channelRoutingMetadata = this.encodeRoute(environment.messagesService.channelEndpoint);
+    const sendRoutingMetadata = this.encodeRoute(environment.messagesService.sendMessagesEndpoint);
+    const receiveRoutingMetadata = this.encodeRoute(environment.messagesService.receiveMessagesEndpoint);
 
     let rsocketUrl = environment.messagesService.rsocketUrl;
     if (rsocketUrl.startsWith('/')) {
@@ -101,15 +102,17 @@ export class MessageService {
     // Connect to the back end RSocket and request a stream (connects to the handler() method in NewsSocket.kt)
 
     client.connect().then((socket: ReactiveSocket<any, any>) => {
-
-      /*
+      /*flowable.map(message => socket.fireAndForget({
+        metadata: sendRoutingMetadata,
+        data: message
+      }));
       socket.requestStream({
-        metadata: routingMetadata,
+        metadata: receiveRoutingMetadata,
         data: undefined
       })*/
       socket.requestChannel(flowable.map(message => {
         return {
-          metadata: routingMetadata,
+          metadata: channelRoutingMetadata,
           data: message
         };
       })).subscribe({
@@ -133,7 +136,6 @@ export class MessageService {
         }
       });
     }, error => console.error(error));
-    this.senderSubject.next(undefined);
   }
 
 
