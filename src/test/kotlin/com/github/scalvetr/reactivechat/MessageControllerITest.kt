@@ -2,6 +2,7 @@ package com.github.scalvetr.reactivechat
 
 import app.cash.turbine.test
 import com.github.scalvetr.reactivechat.common.PostgreSqlContainer
+import com.github.scalvetr.reactivechat.controller.MessageController
 import com.github.scalvetr.reactivechat.repository.MessageRepository
 import com.github.scalvetr.reactivechat.repository.model.ContentType
 import com.github.scalvetr.reactivechat.repository.model.MessageEntity
@@ -97,7 +98,7 @@ class MessageControllerITest(
                 rsocketBuilder.websocket(URI("ws://localhost:${serverPort}/rsocket"))
 
             rSocketRequester
-                .route("api.v1.messages.stream")
+                .route("api.v1.messages.${MessageController.SEND_STREAM}")
                 .retrieveFlow<Message>()
                 .test {
                     expectThat(expectItem().prepareForTesting())
@@ -128,7 +129,7 @@ class MessageControllerITest(
                     expectNoEvents()
 
                     launch {
-                        rSocketRequester.route("api.v1.messages.stream")
+                        rSocketRequester.route("api.v1.messages.${MessageController.RECEIVE_STREAM}")
                             .dataWithType(flow {
                                 emit(
                                     Message(
@@ -164,7 +165,7 @@ class MessageControllerITest(
                 val rSocketRequester =
                     rsocketBuilder.websocket(URI("ws://localhost:${serverPort}/rsocket"))
 
-                rSocketRequester.route("api.v1.messages.stream")
+                rSocketRequester.route("api.v1.messages.${MessageController.RECEIVE_STREAM}")
                     .dataWithType(flow {
                         emit(
                             Message(
