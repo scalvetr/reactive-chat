@@ -136,6 +136,8 @@ export class MessageService {
         }
       });
     }, error => console.error(error));
+    // send an empty message, to receive feedback
+    // this.senderSubject.next(undefined);
   }
 
 
