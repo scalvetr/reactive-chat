@@ -17,11 +17,13 @@ Build & test
 ./gradlew clean build
 ```
 Package jar & build docker image
+
 ```shell
 ./gradlew bootJar
 # build image
 docker build . --build-arg JAR_FILE=build/libs/reactive-chat.jar -t reactive-chat
 
+docker run --rm reactive-chat --image=reactive-chat
 ```
 
 ### UI only

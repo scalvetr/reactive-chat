@@ -1,11 +1,21 @@
 # build
-FROM openjdk:17-oracle AS builder
-LABEL stage=builder
+FROM ubuntu:20.04 AS builder
+
+RUN apt install curl -y
+RUN curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
+
+RUN apt-get update;\
+apt-get -y install nodejs;\
+npm install -g npm@7.20.3;\
+npm install -g @angular/cli@12.1.4;\
+npm install -g typescript@4.3.5
+
+RUN apt install openjdk-17-jre-headless -y
 WORKDIR application
 
-ARG JAR_FILE="build/libs/reactive-chat.jar"
-
-ADD ${JAR_FILE} ./application.jar
+ADD . .
+RUN ./gradlew clean build
+RUN cp build/*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 # image

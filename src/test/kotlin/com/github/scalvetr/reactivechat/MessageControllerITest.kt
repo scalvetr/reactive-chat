@@ -8,7 +8,6 @@ import com.github.scalvetr.reactivechat.repository.model.ContentType
 import com.github.scalvetr.reactivechat.repository.model.MessageEntity
 import com.github.scalvetr.reactivechat.service.model.Message
 import com.github.scalvetr.reactivechat.service.model.User
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -25,18 +24,20 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.messaging.rsocket.RSocketRequester
 import org.springframework.messaging.rsocket.dataWithType
 import org.springframework.messaging.rsocket.retrieveFlow
+import org.springframework.test.context.ActiveProfiles
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 import java.net.URI
 import java.net.URL
 import java.time.Instant
 import java.time.temporal.ChronoUnit.MILLIS
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 @SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 )
+@ActiveProfiles("postgresql")
 class MessageControllerITest(
     @Autowired val rsocketBuilder: RSocketRequester.Builder,
     @Autowired val messageRepository: MessageRepository,
@@ -89,19 +90,17 @@ class MessageControllerITest(
         }
     }
 
-    @ExperimentalTime
-    @ExperimentalCoroutinesApi
     @Test
     fun `test that messages API streams latest messages`() {
         runBlocking {
             val rSocketRequester =
-                rsocketBuilder.websocket(URI("ws://localhost:${serverPort}/rsocket"))
+                rsocketBuilder.websocket(URI("ws://localhost:${serverPort}/ws"))
 
             rSocketRequester
                 .route("api.v1.messages.${MessageController.SEND_STREAM}")
                 .retrieveFlow<Message>()
                 .test {
-                    expectThat(expectItem().prepareForTesting())
+                    expectThat(awaitItem().prepareForTesting())
                         .isEqualTo(
                             Message(
                                 User("test", URL("http://test.com")),
@@ -110,7 +109,7 @@ class MessageControllerITest(
                             )
                         )
 
-                    expectThat(expectItem().prepareForTesting())
+                    expectThat(awaitItem().prepareForTesting())
                         .isEqualTo(
                             Message(
                                 User("test1", URL("http://test.com")),
@@ -118,7 +117,7 @@ class MessageControllerITest(
                                 now.minusSeconds(1)
                             )
                         )
-                    expectThat(expectItem().prepareForTesting())
+                    expectThat(awaitItem().prepareForTesting())
                         .isEqualTo(
                             Message(
                                 User("test2", URL("http://test.com")),
@@ -143,7 +142,7 @@ class MessageControllerITest(
                             .collect()
                     }
 
-                    expectThat(expectItem().prepareForTesting())
+                    expectThat(awaitItem().prepareForTesting())
                         .isEqualTo(
                             Message(
                                 User("test", URL("http://test.com")),
@@ -163,7 +162,7 @@ class MessageControllerITest(
         runBlocking {
             launch {
                 val rSocketRequester =
-                    rsocketBuilder.websocket(URI("ws://localhost:${serverPort}/rsocket"))
+                    rsocketBuilder.websocket(URI("ws://localhost:${serverPort}/ws"))
 
                 rSocketRequester.route("api.v1.messages.${MessageController.RECEIVE_STREAM}")
                     .dataWithType(flow {
@@ -179,7 +178,7 @@ class MessageControllerITest(
                     .collect()
             }
 
-            delay(Duration.seconds(2))
+            delay(2.seconds)
 
             messageRepository.findAll()
                 .first { it.content.contains("HelloWorld") }
