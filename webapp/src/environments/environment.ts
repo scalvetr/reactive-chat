@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   messagesService: {
-    rsocketUrl: 'ws://localhost:8080/ws',
+    wsUrl: 'ws://localhost:8080/ws',
     channelEndpoint: 'api.v1.messages.channel',
     sendMessagesEndpoint: 'api.v1.messages.receive', // send to the receiving stream in the server side
     receiveMessagesEndpoint: 'api.v1.messages.send' // receive from the sending stream in the server side

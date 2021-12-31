@@ -1,18 +1,18 @@
 spring:
   r2dbc:
-    url: r2dbc:postgresql://${postgres_host:localhost}:${postgres_port:5432}/${postgres_db:reactive-chat}
-    username: ${postgres_user:user}
-    password: ${postgres_password:password}
+    url: r2dbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:reactive-chat}
+    username: ${POSTGRES_USER:user}
+    password: ${POSTGRES_PASSWORD:password}
     pool:
       enabled: true
     properties:
-      schema: ${postgres_schema:public}
+      schema: ${POSTGRES_SCHEMA:public}
 
 
   liquibase:
     enabled: true
-    url: jdbc:postgresql://${postgres_host:localhost}:${postgres_port:5432}/${postgres_db:reactive-chat}
-    default-schema: ${postgres_schema:public}
-    user: ${postgres_user:user}
-    password: ${postgres_password:password}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:reactive-chat}
+    default-schema: ${POSTGRES_SCHEMA:public}
+    user: ${POSTGRES_USER:user}
+    password: ${POSTGRES_PASSWORD:password}
     driver-class-name: org.postgresql.Driver

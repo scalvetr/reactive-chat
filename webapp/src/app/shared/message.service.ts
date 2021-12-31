@@ -43,12 +43,12 @@ export class MessageService {
     const sendRoutingMetadata = this.encodeRoute(environment.messagesService.sendMessagesEndpoint);
     const receiveRoutingMetadata = this.encodeRoute(environment.messagesService.receiveMessagesEndpoint);
 
-    let rsocketUrl = environment.messagesService.rsocketUrl;
-    if (rsocketUrl.startsWith('/')) {
+    let wsUrl = environment.messagesService.wsUrl;
+    if (wsUrl.startsWith('/')) {
       const l = window.location;
-      rsocketUrl = ((l.protocol === 'https:') ? 'wss://' : 'ws://') + l.hostname +
+      wsUrl = ((l.protocol === 'https:') ? 'wss://' : 'ws://') + l.hostname +
         (((l.port !== '80') && (l.port !== '443')) ? ':' + l.port : '') +
-        rsocketUrl;
+        wsUrl;
     }
     const client = new RSocketClient({
       // send/receive objects instead of strings/buffers
@@ -67,7 +67,7 @@ export class MessageService {
         metadataMimeType: 'message/x.rsocket.routing.v0'
       },
       transport: new RSocketWebSocketClient({
-        url: rsocketUrl
+        url: wsUrl
       })
     });
     const self = this;

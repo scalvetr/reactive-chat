@@ -1,4 +1,6 @@
 spring:
+  webflux:
+    base-path: ${CONTEXT_PATH:}
   r2dbc:
     url: r2dbc:h2:mem:///reactive-chat
     username: sa
