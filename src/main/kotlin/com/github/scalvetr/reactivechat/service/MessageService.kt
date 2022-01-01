@@ -13,6 +13,6 @@ interface MessageService {
 
     suspend fun post(messages: Flow<Message>)
 
-    suspend fun post(messages: Message)
+    suspend fun post(messages: Message) : Message
 
 }

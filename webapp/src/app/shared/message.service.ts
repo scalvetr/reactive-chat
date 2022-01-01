@@ -96,14 +96,19 @@ export class MessageService {
             }
           });
 
-          // send (socket.fireAndForget)
+          // send (socket.fireAndForget or socket.requestResponse)
           this.senderSubject.subscribe({
             next: value => {
-              console.log('sender.next(%s)', value);
-              socket.fireAndForget({
+              console.log('senderSubject.next(%s)', value);
+              //socket.fireAndForget({
+              socket.requestResponse({
                 metadata: sendRoutingMetadata,
                 data: value
-              })
+              }).subscribe({
+                  onComplete: message =>
+                    console.log('requestResponse.onComplete(%s)', message)
+                }
+              )
             }
           });
         },

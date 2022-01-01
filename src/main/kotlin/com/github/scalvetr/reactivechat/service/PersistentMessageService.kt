@@ -28,9 +28,9 @@ class PersistentMessageService(val messageRepository: MessageRepository) : Messa
             .let { messageRepository.saveAll(it) }
             .collect()
 
-    override suspend fun post(message: Message) {
+    override suspend fun post(message: Message): Message {
         stream.emit(message)
-        messageRepository.save(message.asDomainObject())
+        return messageRepository.save(message.asDomainObject()).asViewModel().asRendered()
     }
 
 }
