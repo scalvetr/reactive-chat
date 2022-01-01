@@ -143,7 +143,9 @@ export class MessageService {
 
   private handlePayload(payload: Payload<Message, any>): void {
     console.log('handlePayload: ' + payload.data);
-    this.receiverSubject.next(payload.data);
+    if (payload.data) {
+      this.receiverSubject.next(payload.data);
+    }
   }
 
   private requestMoreDataIfNeeded(): void {
