@@ -24,32 +24,32 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     this.messages = [];
-    this.messageService.messagesObservable().subscribe(
-      success => {
+    this.messageService.messagesObservable().subscribe({
+      next: success => {
         this.error = null;
         this.messages.push(success);
       },
-      error => { // second parameter is to listen for error
+      error: error => { // second parameter is to listen for error
         console.log(error);
         this.error = 'Error getting message list';
       }
-    );
+    });
   }
 
   onSubmit(f: NgForm): void {
     console.log(f.valid);
     if (f.valid && this.currentUser != null) {
       const newMessage = new Message(this.currentUser, this.textbox, new Date());
-      this.messageService.sendMessage(newMessage).subscribe(
-        message => {
+      this.messageService.sendMessage(newMessage).subscribe({
+        next: message => {
           console.log('successfully sent = ' + message);
           this.textbox = '';
         },
-        error => { // second parameter is to listen for error
+        error: error => { // second parameter is to listen for error
           console.log(error);
           this.error = 'Error sending message list';
         }
-      );
+      });
     }
   }
 
