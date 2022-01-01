@@ -1,14 +1,15 @@
 # build
 FROM ubuntu:20.04 AS builder
 
-RUN apt install curl -y
-RUN curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
-
 RUN apt-get update;\
-apt-get -y install nodejs;\
-npm install -g npm@7.20.3;\
-npm install -g @angular/cli@12.1.4;\
-npm install -g typescript@4.3.5
+apt install curl -y
+
+RUN curl -fsSL https://deb.nodesource.com/setup_17.x | bash
+
+RUN apt-get -y install nodejs;\
+npm install -g npm@8.3.0;\
+npm install -g @angular/cli@13.1.2;\
+npm install -g typescript@4.5.4
 
 RUN apt install openjdk-17-jre-headless -y
 WORKDIR application

@@ -13,34 +13,30 @@ import org.springframework.stereotype.Controller
 @MessageMapping("api.v1.messages")
 class MessageController(val messageService: MessageService) {
     companion object {
-        const val SEND_STREAM = "stream"
-        const val RECEIVE_STREAM = "stream"
-        const val CHANNEL = "channel"
+        const val STREAM = "stream"
     }
 
     /**
-     * Bi-Directional stream: rsocket client => requestChannel
+     * Inbound stream: rsocket client => requestChannel (only sending)
      */
-    /* https://stremler.io/2020-05-31-rsocket-messaging-with-spring-boot-and-rsocket-js/ */
-    @MessageMapping(CHANNEL)
-    fun channel(@Payload inboundMessages: Flow<Message>) = messageService.channel(inboundMessages)
-
+    //@MessageMapping(STREAM)
+    //suspend fun receive(@Payload inboundMessages: Flow<Message>) =
+    //   messageService.post(inboundMessages)
 
     /**
-     * Inbound stream: rsocket client => requestResponse, fireAndForget, requestChannel (only sending)
+     * Inbound stream: rsocket client => requestResponse, fireAndForget (only sending)
      */
-    @MessageMapping(RECEIVE_STREAM)
-    suspend fun receive(@Payload inboundMessages: Flow<Message>) =
-        messageService.post(inboundMessages)
+    @MessageMapping(STREAM)
+    suspend fun receive(@Payload message: Message) =
+        messageService.post(message)
 
     /**
      * Outbound stream: rsocket client => requestStream
      */
-    @MessageMapping(SEND_STREAM)
-    fun send(): Flow<Message> = messageService
+    @MessageMapping(STREAM)
+    suspend fun send(): Flow<Message> = messageService
         .stream()
         .onStart {
             emitAll(messageService.latest())
         }
-
 }

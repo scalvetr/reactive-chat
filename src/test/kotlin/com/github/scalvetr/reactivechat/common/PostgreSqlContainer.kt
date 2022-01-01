@@ -9,7 +9,7 @@ open class PostgreSqlContainer {
 
     companion object {
 
-        val container: PostgreSQLContainer<*> = PostgreSQLContainer<Nothing>("postgres:12.4-alpine").apply {
+        val container: PostgreSQLContainer<*> = PostgreSQLContainer<Nothing>("postgres:14.1-alpine").apply {
             withDatabaseName("it-db")
             withUsername("it-db-user")
             withPassword("it-db-password")
@@ -19,11 +19,14 @@ open class PostgreSqlContainer {
         @JvmStatic
         @DynamicPropertySource
         fun registerPgProperties(registry: DynamicPropertyRegistry) {
-            registry.add("postgres_host") { container.host }
-            registry.add("postgres_port") { container.firstMappedPort }
-            registry.add("postgres_db") { container.databaseName }
-            registry.add("postgres_user") { container.username }
-            registry.add("postgres_password") { container.password }
+            registry.add("POSTGRES_HOST") { container.host }
+            registry.add("POSTGRES_PORT") { container.firstMappedPort }
+            registry.add("POSTGRES_DB") { container.databaseName }
+            registry.add("POSTGRES_USER") { container.username }
+            registry.add("POSTGRES_PASSWORD") { container.password }
+            // By default, SQL database initialization is only performed when using an embedded in-memory database.
+            // https://docs.spring.io/spring-boot/docs/2.6.2/reference/htmlsingle/#howto.data-initialization.using-basic-sql-scripts
+            registry.add("spring.sql.init.mode") { "always" }
         }
 
         @JvmStatic
