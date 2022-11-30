@@ -19,9 +19,9 @@ class MessageController(val messageService: MessageService) {
     /**
      * Inbound stream: rsocket client => requestChannel (only sending)
      */
-    //@MessageMapping(STREAM)
-    //suspend fun receive(@Payload inboundMessages: Flow<Message>) =
-    //   messageService.post(inboundMessages)
+    @MessageMapping(STREAM)
+    suspend fun receive(@Payload inboundMessages: Flow<Message>) =
+       messageService.post(inboundMessages)
 
     /**
      * Inbound stream: rsocket client => requestResponse, fireAndForget (only sending)

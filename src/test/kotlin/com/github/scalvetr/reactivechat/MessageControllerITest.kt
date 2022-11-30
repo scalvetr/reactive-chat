@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.messaging.rsocket.RSocketRequester
 import org.springframework.messaging.rsocket.dataWithType
 import org.springframework.messaging.rsocket.retrieveFlow
@@ -97,7 +97,7 @@ class MessageControllerITest(
                 rsocketBuilder.websocket(URI("ws://localhost:${serverPort}/ws"))
 
             rSocketRequester
-                .route("api.v1.messages.${MessageController.SEND_STREAM}")
+                .route("api.v1.messages.${MessageController.STREAM}")
                 .retrieveFlow<Message>()
                 .test {
                     expectThat(awaitItem().prepareForTesting())
@@ -128,7 +128,7 @@ class MessageControllerITest(
                     expectNoEvents()
 
                     launch {
-                        rSocketRequester.route("api.v1.messages.${MessageController.RECEIVE_STREAM}")
+                        rSocketRequester.route("api.v1.messages.${MessageController.STREAM}")
                             .dataWithType(flow {
                                 emit(
                                     Message(
@@ -164,7 +164,7 @@ class MessageControllerITest(
                 val rSocketRequester =
                     rsocketBuilder.websocket(URI("ws://localhost:${serverPort}/ws"))
 
-                rSocketRequester.route("api.v1.messages.${MessageController.RECEIVE_STREAM}")
+                rSocketRequester.route("api.v1.messages.${MessageController.STREAM}")
                     .dataWithType(flow {
                         emit(
                             Message(

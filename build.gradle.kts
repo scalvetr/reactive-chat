@@ -2,10 +2,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    id("org.springframework.boot") version "2.6.2"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.spring") version "1.6.10"
+    id("org.springframework.boot") version "3.0.0"
+    id("io.spring.dependency-management") version "1.1.0"
+    kotlin("jvm") version "1.7.22"
+    kotlin("plugin.spring") version "1.7.22"
 }
 
 group = "com.github.scalvetr"
@@ -16,7 +16,7 @@ repositories {
     mavenCentral()
 }
 
-extra["springCloudVersion"] = "2021.0.0"
+extra["springCloudVersion"] = "2021.0.5"
 
 dependencies {
     implementation(project(":webapp"))
@@ -34,18 +34,18 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-    implementation("org.jetbrains:markdown:0.2.4")
+    implementation("org.jetbrains:markdown:0.3.1")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.strikt:strikt-core:0.33.0")
+    testImplementation("io.strikt:strikt-core:0.34.1")
 
-    testImplementation("app.cash.turbine:turbine:0.7.0") // testing library for kotlin coroutines
-    testImplementation("org.testcontainers:postgresql:1.16.2")
-    testImplementation("io.r2dbc:r2dbc-postgresql")
+    testImplementation("app.cash.turbine:turbine:0.12.1") // testing library for kotlin coroutines
+    testImplementation("org.testcontainers:postgresql:1.17.6")
+    testImplementation("org.postgresql:r2dbc-postgresql")
     //testImplementation("org.liquibase:liquibase-core")
 
     // r2dbc driver
-    //runtimeOnly("io.r2dbc:r2dbc-postgresql")
+    //runtimeOnly("org.postgresql:r2dbc-postgresql")
     runtimeOnly("io.r2dbc:r2dbc-h2")
 
     // liquibase jdbc
